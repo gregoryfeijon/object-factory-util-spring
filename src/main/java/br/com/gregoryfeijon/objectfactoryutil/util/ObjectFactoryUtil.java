@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -54,6 +56,20 @@ public final class ObjectFactoryUtil {
 
 	private ObjectFactoryUtil() {}
 
+	public static <T> List<T> copyAllObjectsFromCollection(Collection<T> entitiesToCopy) {
+		return entitiesToCopy.stream().map(createCopy()).collect(Collectors.toList());
+	}
+
+	public static <T, U extends Collection<T>> U copyAllObjectsFromCollection(Collection<T> entitiesToCopy,
+			Supplier<U> supplier) {
+		return entitiesToCopy.stream().map(createCopy()).collect(Collectors.toCollection(supplier));
+	}
+
+	@SuppressWarnings("unchecked")
+	private static <T> Function<T, T> createCopy() {
+		return i -> (T) createFromObject(i);
+	}
+	
 	/**
 	 * <strong>Método para retornar um novo objeto criado. Mesma lógica de cópia do
 	 * {@linkplain #createFromObject(Object, Object) createFromObject}.</strong>
