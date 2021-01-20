@@ -1,4 +1,4 @@
-package br.com.gregoryfeijon.objectfactoryutil;
+package br.com.gregoryfeijon.objectfactoryutilspring;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
