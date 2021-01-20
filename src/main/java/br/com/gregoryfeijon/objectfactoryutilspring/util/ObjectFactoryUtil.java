@@ -1,4 +1,4 @@
-package br.com.gregoryfeijon.objectfactoryutil.util;
+package br.com.gregoryfeijon.objectfactoryutilspring.util;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -36,8 +36,8 @@ import org.springframework.util.SerializationUtils;
 
 import com.google.gson.Gson;
 
-import br.com.gregoryfeijon.objectfactoryutil.annotation.ObjectConstructor;
-import br.com.gregoryfeijon.objectfactoryutil.exception.ObjectFactoryUtilException;
+import br.com.gregoryfeijon.objectfactoryutilspring.annotation.ObjectConstructor;
+import br.com.gregoryfeijon.objectfactoryutilspring.exception.ObjectFactoryUtilException;
 
 /**
  * 

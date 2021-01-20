@@ -1,4 +1,4 @@
-package br.com.gregoryfeijon.objectfactoryutil.util;
+package br.com.gregoryfeijon.objectfactoryutilspring.util;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

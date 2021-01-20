@@ -1,4 +1,4 @@
-package br.com.gregoryfeijon.objectfactoryutil.exception;
+package br.com.gregoryfeijon.objectfactoryutilspring.exception;
 
 import java.util.List;
 

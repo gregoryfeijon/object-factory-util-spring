@@ -1,4 +1,4 @@
-package br.com.gregoryfeijon.objectfactoryutil.util;
+package br.com.gregoryfeijon.objectfactoryutilspring.util;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

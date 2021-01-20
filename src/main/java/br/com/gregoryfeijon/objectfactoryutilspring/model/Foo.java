@@ -1,9 +1,9 @@
-package br.com.gregoryfeijon.objectfactoryutil.model;
+package br.com.gregoryfeijon.objectfactoryutilspring.model;
 
 import java.util.List;
 
-import br.com.gregoryfeijon.objectfactoryutil.annotation.ObjectConstructor;
-import br.com.gregoryfeijon.objectfactoryutil.util.ObjectFactoryUtil;
+import br.com.gregoryfeijon.objectfactoryutilspring.annotation.ObjectConstructor;
+import br.com.gregoryfeijon.objectfactoryutilspring.util.ObjectFactoryUtil;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

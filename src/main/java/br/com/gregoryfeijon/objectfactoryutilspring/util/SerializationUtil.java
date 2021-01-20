@@ -1,4 +1,4 @@
-package br.com.gregoryfeijon.objectfactoryutil.util;
+package br.com.gregoryfeijon.objectfactoryutilspring.util;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -11,7 +11,7 @@ import java.util.Collection;
 
 import com.google.gson.Gson;
 
-import br.com.gregoryfeijon.objectfactoryutil.exception.ObjectFactoryUtilException;
+import br.com.gregoryfeijon.objectfactoryutilspring.exception.ObjectFactoryUtilException;
 
 /**
  * 

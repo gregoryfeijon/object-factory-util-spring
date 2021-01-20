@@ -1,4 +1,4 @@
-package br.com.gregoryfeijon.objectfactoryutil;
+package br.com.gregoryfeijon.objectfactoryutilspring;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -12,10 +12,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.util.Assert;
 
-import br.com.gregoryfeijon.objectfactoryutil.model.Bar;
-import br.com.gregoryfeijon.objectfactoryutil.model.Foo;
-import br.com.gregoryfeijon.objectfactoryutil.util.GsonUtil;
-import br.com.gregoryfeijon.objectfactoryutil.util.ObjectFactoryUtil;
+import br.com.gregoryfeijon.objectfactoryutilspring.model.Bar;
+import br.com.gregoryfeijon.objectfactoryutilspring.model.Foo;
+import br.com.gregoryfeijon.objectfactoryutilspring.util.GsonUtil;
+import br.com.gregoryfeijon.objectfactoryutilspring.util.ObjectFactoryUtil;
 
 @SpringBootApplication
 public class ObjectFactoryUtilApplication {

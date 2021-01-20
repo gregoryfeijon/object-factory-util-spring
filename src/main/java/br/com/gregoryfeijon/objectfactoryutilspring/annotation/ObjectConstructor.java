@@ -1,4 +1,4 @@
-package br.com.gregoryfeijon.objectfactoryutil.annotation;
+package br.com.gregoryfeijon.objectfactoryutilspring.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
