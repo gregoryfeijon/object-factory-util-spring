@@ -1,16 +1,12 @@
 package br.com.gregoryfeijon.objectfactoryutilspring.model;
 
 import br.com.gregoryfeijon.objectfactoryutilspring.annotation.ObjectConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
-@Getter
-@Setter
-@ToString
-@ObjectConstructor
+@Data
 @NoArgsConstructor
+@ObjectConstructor
 public class Bar {
 
 	private long barId;

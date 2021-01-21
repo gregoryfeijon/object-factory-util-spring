@@ -10,10 +10,10 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.com.gregoryfeijon</groupId>
-	<artifactId>objectfactoryutil</artifactId>
+	<artifactId>object-factory-util-spring</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>objectfactoryutil</name>
-	<description>ObjectFactoryUtil use example, to copy any objects entirely with new referencies.</description>
+	<name>object-factory-util-spring</name>
+	<description>ObjectFactoryUtil use example, to copy any objects entirely with new references (for Spring projects).</description>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -24,7 +24,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>

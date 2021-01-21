@@ -4,16 +4,12 @@ import java.util.List;
 
 import br.com.gregoryfeijon.objectfactoryutilspring.annotation.ObjectConstructor;
 import br.com.gregoryfeijon.objectfactoryutilspring.util.ObjectFactoryUtil;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
-@Getter
-@Setter
-@ToString
-@ObjectConstructor(exclude = { "fooId" })
+@Data
 @NoArgsConstructor
+@ObjectConstructor(exclude = { "fooId" })
 public class Foo {
 
 	private long fooId;
