@@ -1,5 +1,6 @@
 package br.com.gregoryfeijon.objectfactoryutilspring.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import br.com.gregoryfeijon.objectfactoryutilspring.annotation.ObjectConstructor;
@@ -10,8 +11,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @ObjectConstructor(exclude = { "fooId" })
-public class Foo {
+public class Foo implements Serializable {
 
+	private static final long serialVersionUID = -157292002192952506L;
+	
 	private long fooId;
 	private String fooName;
 	private Bar bar;
