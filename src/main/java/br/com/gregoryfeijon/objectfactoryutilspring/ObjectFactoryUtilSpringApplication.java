@@ -18,10 +18,10 @@ import br.com.gregoryfeijon.objectfactoryutilspring.util.GsonUtil;
 import br.com.gregoryfeijon.objectfactoryutilspring.util.ObjectFactoryUtil;
 
 @SpringBootApplication
-public class ObjectFactoryUtilApplication {
+public class ObjectFactoryUtilSpringApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ObjectFactoryUtilApplication.class, args);
+		SpringApplication.run(ObjectFactoryUtilSpringApplication.class, args);
 		List<Bar> bars = createBars(Arrays.asList("First bar name", "Second bar name", "Third bar name"));
 		copyListsExample(bars);
 		copyObjectsExample(bars);
