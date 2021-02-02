@@ -65,6 +65,7 @@ public final class ObjectFactoryUtil {
 	 * @return {@linkplain List}&ltT&gt
 	 */
 	public static <T> List<T> copyAllObjectsFromCollection(Collection<T> entitiesToCopy) {
+		verifyCollection(entitiesToCopy);
 		return entitiesToCopy.stream().map(createCopy()).collect(Collectors.toList());
 	}
 
@@ -81,9 +82,23 @@ public final class ObjectFactoryUtil {
 	 */
 	public static <T, U extends Collection<T>> U copyAllObjectsFromCollection(Collection<T> entitiesToCopy,
 			Supplier<U> supplier) {
+		verifyCollectionAndSupplier(entitiesToCopy, supplier);
 		return entitiesToCopy.stream().map(createCopy()).collect(Collectors.toCollection(supplier));
 	}
 
+	private static <T, U> void verifyCollectionAndSupplier(Collection<T> entitiesToCopy, Supplier<U> supplier) {
+		verifyCollection(entitiesToCopy);
+		if (supplier == null) {
+			throw new ObjectFactoryUtilException("O tipo de coleção especificada para retorno é nulo.");
+		}
+	}
+
+	private static <T> void verifyCollection(Collection<T> entitiesToCopy) {
+		if (ValidationHelpers.collectionEmpty(entitiesToCopy)) {
+			throw new ObjectFactoryUtilException("A lista a ser copiada não possui elementos.");
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	private static <T> Function<T, T> createCopy() {
 		return i -> (T) createFromObject(i);
@@ -98,6 +113,7 @@ public final class ObjectFactoryUtil {
 	 * @return {@linkplain Object}
 	 */
 	public static <T> Object createFromObject(T source) {
+		verifySourceObject(source);
 		Object dest = BeanUtils.instantiateClass(source.getClass());
 		createFromObject(source, dest);
 		return dest;
@@ -128,6 +144,7 @@ public final class ObjectFactoryUtil {
 	 * @param dest   - &ltT&gt
 	 */
 	public static <T> void createFromObject(T source, T dest) {
+		verifySourceAndDestObjects(source, dest);
 		List<Field> sourceFields = getFieldsToCopy(source, dest);
 		sourceFields.stream().forEach(sourceField -> {
 			ReflectionUtil.getFieldsAsCollection(dest).stream()
@@ -136,6 +153,19 @@ public final class ObjectFactoryUtil {
 						FieldUtils.setProtectedFieldValue(destField.getName(), dest, verifyValue(sourceField, source));
 					});
 		});
+	}
+
+	private static <T> void verifySourceAndDestObjects(T source, T dest) {
+		verifySourceObject(source);
+		if (dest == null) {
+			throw new ObjectFactoryUtilException("O objeto de destino é nulo.");
+		}
+	}
+
+	private static <T> void verifySourceObject(T source) {
+		if (source == null) {
+			throw new ObjectFactoryUtilException("O objeto a ser copiado é nulo.");
+		}
 	}
 
 	/**
