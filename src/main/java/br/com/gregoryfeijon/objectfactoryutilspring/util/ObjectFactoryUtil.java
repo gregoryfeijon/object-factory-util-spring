@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -40,26 +41,44 @@ import br.com.gregoryfeijon.objectfactoryutilspring.annotation.ObjectConstructor
 import br.com.gregoryfeijon.objectfactoryutilspring.exception.ObjectFactoryUtilException;
 
 /**
- * 
  * 09 de março de 2020
  * 
  * @author gregory.feijon
  * 
  * @see ObjectConstructor
- * 
  */
 
 public final class ObjectFactoryUtil {
 
 	private static final Gson GSON = GsonUtil.getGson();
 	private static final Set<Class<?>> WRAPPER_TYPES = getWrapperTypes();
+	private static final Predicate<Field> PREDICATE_MODIFIERS = criaPredicateModifiers();
 
 	private ObjectFactoryUtil() {}
 
+	/**
+	 * <strong>Método que retorna todos os objetos de uma {@linkplain Collection
+	 * coleção} copiados.</strong>
+	 * 
+	 * @param <T>
+	 * @param entitiesToCopy - {@linkplain Collection}&ltT&gt
+	 * @return {@linkplain List}&ltT&gt
+	 */
 	public static <T> List<T> copyAllObjectsFromCollection(Collection<T> entitiesToCopy) {
 		return entitiesToCopy.stream().map(createCopy()).collect(Collectors.toList());
 	}
 
+	/**
+	 * <strong> Método para copiar todos os elementos de uma {@linkplain Collection
+	 * coleção} e retornar em um tipo escolhido de {@linkplain Collection
+	 * coleção}.</strong>
+	 * 
+	 * @param <T>
+	 * @param <U>
+	 * @param entitiesToCopy {@linkplain Collection}&ltT&gt
+	 * @param supplier       {@linkplain Supplier}&ltU&gt
+	 * @return U
+	 */
 	public static <T, U extends Collection<T>> U copyAllObjectsFromCollection(Collection<T> entitiesToCopy,
 			Supplier<U> supplier) {
 		return entitiesToCopy.stream().map(createCopy()).collect(Collectors.toCollection(supplier));
@@ -143,8 +162,8 @@ public final class ObjectFactoryUtil {
 	 */
 	private static <T> List<Field> getFieldsToCopy(T source, T dest) {
 		List<Field> sourceFields = new ArrayList<>(ReflectionUtil.getFieldsAsCollection(source));
-		List<Field> fieldsToRemove = new LinkedList<>(sourceFields.stream()
-				.filter(sourceField -> Modifier.isFinal(sourceField.getModifiers())).collect(Collectors.toList()));
+		List<Field> fieldsToRemove = new LinkedList<>(
+				sourceFields.stream().filter(PREDICATE_MODIFIERS).collect(Collectors.toList()));
 		String[] exclude = getExcludeFromAnnotation(dest);
 		if (ArrayUtils.isNotEmpty(exclude)) {
 			Arrays.stream(exclude).forEach(excludeField -> {
@@ -509,4 +528,17 @@ public final class ObjectFactoryUtil {
 		aux.add(Number.class);
 		return aux;
 	}
+	
+    /**
+     * <strong>Método responsável por criar o predicate que verifica se o campo
+     * testado possui os modificadores <i>static</i> e <i>final</i>, que,
+     * normalmente, caracteriza uma constante, cujo valor não precisa ser
+     * copiado.</strong>
+     *
+     * @return {@link Predicate}&lt{@link Field}&gt
+     */
+    private static Predicate<Field> criaPredicateModifiers() {
+        Predicate<Field> predicate = p -> Modifier.isStatic(p.getModifiers()) && Modifier.isFinal(p.getModifiers());
+        return predicate;
+    }
 }
