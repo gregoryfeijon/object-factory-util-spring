@@ -17,9 +17,7 @@ import net.dongliu.gson.GsonJava8TypeAdapterFactory;
 /**
  * 
  * 26 de fev de 2020
- * 
- * 
- * 
+ *
  * @author gregory.feijon
  * 
  */
@@ -29,11 +27,8 @@ public final class GsonUtil {
 
 	// QUANDO NECESSÁRIO ATRIBUTO COM O TIPO ABSTRATO! NECESSÁRIO BIBLIOTECA
 	// GSON-EXTRAS
-//    .registerTypeAdapterFactory(RuntimeTypeAdapterFactory.of(Venda.class, "type")
-//            .registerSubtype(Romaneio.class, Romaneio.class.getName())
-//            .registerSubtype(Pedido.class, Pedido.class.getName())
-//            .registerSubtype(Nfe.class, Nfe.class.getName())
-//            .registerSubtype(Sat.class, Sat.class.getName()))
+//    .registerTypeAdapterFactory(RuntimeTypeAdapterFactory.of(SuperFoo.class, "type")
+//            .registerSubtype(Foo.class, Foo.class.getName())
 
 	private static final Locale BRASIL = new Locale("pt", "BR");
 	private static final GsonBuilder gsonBuilder = new GsonBuilder().disableHtmlEscaping()

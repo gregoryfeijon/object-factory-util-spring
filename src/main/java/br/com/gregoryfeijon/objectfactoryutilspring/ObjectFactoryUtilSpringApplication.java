@@ -1,5 +1,15 @@
 package br.com.gregoryfeijon.objectfactoryutilspring;
 
+import br.com.gregoryfeijon.objectfactoryutilspring.model.Bar;
+import br.com.gregoryfeijon.objectfactoryutilspring.model.Foo;
+import br.com.gregoryfeijon.objectfactoryutilspring.util.GsonUtil;
+import br.com.gregoryfeijon.objectfactoryutilspring.util.ObjectFactoryUtil;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.util.Assert;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -8,23 +18,20 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.util.Assert;
-
-import br.com.gregoryfeijon.objectfactoryutilspring.model.Bar;
-import br.com.gregoryfeijon.objectfactoryutilspring.model.Foo;
-import br.com.gregoryfeijon.objectfactoryutilspring.util.GsonUtil;
-import br.com.gregoryfeijon.objectfactoryutilspring.util.ObjectFactoryUtil;
-
 @SpringBootApplication
 public class ObjectFactoryUtilSpringApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ObjectFactoryUtilSpringApplication.class, args);
-		List<Bar> bars = createBars(Arrays.asList("First bar name", "Second bar name", "Third bar name"));
-		copyListsExample(bars);
-		copyObjectsExample(bars);
+	}
+
+	@Bean
+	CommandLineRunner runExample() {
+		return args -> {
+			List<Bar> bars = createBars(Arrays.asList("First bar name", "Second bar name", "Third bar name"));
+			copyListsExample(bars);
+			copyObjectsExample(bars);
+		};
 	}
 
 	private static List<Bar> createBars(List<String> barNames) {
@@ -55,7 +62,8 @@ public class ObjectFactoryUtilSpringApplication {
 		Foo foo2 = new Foo(foo1);
 		compareObjects(foo1, foo2);
 		foo2.setFooName(
-				"this is a new Foo name. This foo hasn't copy the object ID! See Foo @ObjectConstructor annotation. Also, has completely new object references!");
+				"this is a new Foo name. This foo hasn't copy the object ID! See Foo @ObjectConstructor annotation in " +
+						"Foo model. Also, has completely new object references!");
 		foo2.getBar().setBarName("this is a new BarName");
 		compareObjects(foo1.getBars(), foo2.getBars(), "It's the same collection!");
 		for (Integer i : IntStream.range(0, foo1.getBars().size()).boxed().collect(Collectors.toList())) {

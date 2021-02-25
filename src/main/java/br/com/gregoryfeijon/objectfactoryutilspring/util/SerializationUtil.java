@@ -28,7 +28,7 @@ public final class SerializationUtil {
 
 	public static ByteArrayOutputStream deserialize(byte[] serializedObjects) {
 		InputStream input = new ByteArrayInputStream(serializedObjects);
-		ByteArrayOutputStream baosRetorno = new ByteArrayOutputStream();
+		ByteArrayOutputStream baosRetorno;
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			try (BufferedInputStream bis = new BufferedInputStream(input)) {
 				int aByte;
@@ -83,7 +83,7 @@ public final class SerializationUtil {
 
 	private static Object getObject(byte[] byteArr) {
 		InputStream input = new ByteArrayInputStream(byteArr);
-		Object retorno = null;
+		Object retorno;
 		try (ObjectInputStream in = new ObjectInputStream(input)) {
 			retorno = in.readObject();
 		} catch (IOException | ClassNotFoundException ex) {

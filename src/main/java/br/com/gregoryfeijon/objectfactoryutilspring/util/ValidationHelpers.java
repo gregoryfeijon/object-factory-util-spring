@@ -1,10 +1,11 @@
 package br.com.gregoryfeijon.objectfactoryutilspring.util;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 /**
@@ -51,7 +52,7 @@ public final class ValidationHelpers {
 	}
 
 	private static void criaPredicateIsNull() {
-		predicateIsNull = p -> p == null;
+		predicateIsNull = Objects::isNull;
 	}
 
 	public static List<String> processaErros(Map<String, Boolean> map) {
@@ -66,12 +67,11 @@ public final class ValidationHelpers {
 	}
 
 	private static Predicate<Boolean> criaPredicateProcessaErros() {
-		Predicate<Boolean> predicate = p -> !p;
-		return predicate;
+		return p -> !p;
 	}
 
 	public static List<String> montaListaErro(String mensagemInicial, List<String> erros) {
-		List<String> errosAdd = new LinkedList<>(Arrays.asList(mensagemInicial));
+		List<String> errosAdd = new LinkedList<>(Collections.singletonList(mensagemInicial));
 		errosAdd.addAll(erros);
 		erros.addAll(errosAdd);
 		return errosAdd;

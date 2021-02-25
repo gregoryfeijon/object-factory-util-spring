@@ -146,13 +146,9 @@ public final class ObjectFactoryUtil {
 	public static <T> void createFromObject(T source, T dest) {
 		verifySourceAndDestObjects(source, dest);
 		List<Field> sourceFields = getFieldsToCopy(source, dest);
-		sourceFields.stream().forEach(sourceField -> {
-			ReflectionUtil.getFieldsAsCollection(dest).stream()
-					.filter(destField -> destField.getName().toLowerCase().equals(sourceField.getName().toLowerCase()))
-					.findAny().ifPresent(destField -> {
-						FieldUtils.setProtectedFieldValue(destField.getName(), dest, verifyValue(sourceField, source));
-					});
-		});
+		sourceFields.stream().forEach(sourceField -> ReflectionUtil.getFieldsAsCollection(dest).stream()
+				.filter(destField -> destField.getName().toLowerCase().equals(sourceField.getName().toLowerCase()))
+				.findAny().ifPresent(destField -> FieldUtils.setProtectedFieldValue(destField.getName(), dest, verifyValue(sourceField, source))));
 	}
 
 	private static <T> void verifySourceAndDestObjects(T source, T dest) {
@@ -192,8 +188,8 @@ public final class ObjectFactoryUtil {
 	 */
 	private static <T> List<Field> getFieldsToCopy(T source, T dest) {
 		List<Field> sourceFields = new ArrayList<>(ReflectionUtil.getFieldsAsCollection(source));
-		List<Field> fieldsToRemove = new LinkedList<>(
-				sourceFields.stream().filter(PREDICATE_MODIFIERS).collect(Collectors.toList()));
+		List<Field> fieldsToRemove = sourceFields.stream().filter(PREDICATE_MODIFIERS)
+				.collect(Collectors.toCollection(ArrayList::new));
 		String[] exclude = getExcludeFromAnnotation(dest);
 		if (ArrayUtils.isNotEmpty(exclude)) {
 			Arrays.stream(exclude).forEach(excludeField -> {
@@ -238,7 +234,7 @@ public final class ObjectFactoryUtil {
 	 * serialização. Caso o valor seja uma {@linkplain Collection} ou um
 	 * {@linkplain Map}, também possui um fluxo para validação dos tipos e devida
 	 * cópia dos valores. Se não for nenhum desses tipos, é necessário utilizar o
-	 * método {@linkplain ObjectFactoryUtil#objectCopy(Object) objectCopy}, que cria
+	 * método {@linkplain ObjectFactoryUtil#objectCopy(Object, Class)} objectCopy}, que cria
 	 * uma nova instância do objeto e faz a cópia via serialização, para garantir
 	 * que seja feita a cópia por valor, não por referência.
 	 * <p>
@@ -276,11 +272,10 @@ public final class ObjectFactoryUtil {
 	 * @return {@linkplain Object}
 	 */
 	private static Object serializingClone(Object sourceValue, Class<?> clazz) {
-		Object clone = null;
 		if (sourceValue != null) {
-			clone = serializingClone(clone, sourceValue, clazz);
+			return serializingClone(null, sourceValue, clazz);
 		}
-		return clone;
+		return null;
 	}
 
 	/**
@@ -323,7 +318,7 @@ public final class ObjectFactoryUtil {
 				} else {
 					clone = GSON.fromJson(SerializationUtil.getDesserealizedObjectAsString(byteClone), genericType);
 				}
-			} catch (IOException | ClassNotFoundException ex) {
+			} catch (ClassNotFoundException ex) {
 				throw new ObjectFactoryUtilException("Erro ao deserializar collection na cópia de objeto.", ex);
 			}
 		}
@@ -348,19 +343,17 @@ public final class ObjectFactoryUtil {
 	 * @param genericType - {@linkplain Type}
 	 * @param byteClone   - byte[]
 	 * @return {@linkplain Object}
-	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
 	@SuppressWarnings("unchecked")
 	private static Object verifyList(Object sourceValue, Type genericType, byte[] byteClone)
-			throws IOException, ClassNotFoundException {
+			throws ClassNotFoundException {
 		Object clone = null;
 		try {
 			verifyType(genericType);
 			clone = desserializeCollection(byteClone, genericType);
 		} catch (BeanInstantiationException | ClassNotFoundException ex) {
-			List<Object> aux = Collections.checkedCollection((Collection<Object>) sourceValue, Object.class).stream()
-					.collect(Collectors.toList());
+			List<Object> aux = new ArrayList<>(Collections.checkedCollection((Collection<Object>) sourceValue, Object.class));
 			if (ValidationHelpers.collectionNotEmpty(aux)) {
 				Class<?> objectType = aux.get(0).getClass();
 				clone = desserializeCollection(byteClone, GsonUtil.getType(getRawType(genericType), objectType));
@@ -386,7 +379,7 @@ public final class ObjectFactoryUtil {
 	 */
 	private static void verifyType(Type genericType) throws ClassNotFoundException, BeanInstantiationException {
 		ParameterizedType typeTest = (ParameterizedType) genericType;
-		for (Type type : Arrays.asList(typeTest.getActualTypeArguments())) {
+		for (Type type : typeTest.getActualTypeArguments()) {
 			Class<?> clazz = Class.forName(type.getTypeName());
 			if (!isPrimitiveOrEnum(clazz) && !isWrapperType(clazz)) {
 				BeanUtils.instantiateClass(clazz);
@@ -401,11 +394,8 @@ public final class ObjectFactoryUtil {
 	 * @param byteClone   - byte[]
 	 * @param genericType - {@linkplain Type}
 	 * @return {@linkplain Object}
-	 * @throws IOException
-	 * @throws ClassNotFoundException
 	 */
-	private static Object desserializeCollection(byte[] byteClone, Type genericType)
-			throws IOException, ClassNotFoundException {
+	private static Object desserializeCollection(byte[] byteClone, Type genericType) {
 		return GSON.fromJson(SerializationUtil.getDesserealizedObjectAsString(byteClone), genericType);
 	}
 
@@ -568,7 +558,6 @@ public final class ObjectFactoryUtil {
      * @return {@link Predicate}&lt{@link Field}&gt
      */
     private static Predicate<Field> criaPredicateModifiers() {
-        Predicate<Field> predicate = p -> Modifier.isStatic(p.getModifiers()) && Modifier.isFinal(p.getModifiers());
-        return predicate;
+		return p -> Modifier.isStatic(p.getModifiers()) && Modifier.isFinal(p.getModifiers());
     }
 }

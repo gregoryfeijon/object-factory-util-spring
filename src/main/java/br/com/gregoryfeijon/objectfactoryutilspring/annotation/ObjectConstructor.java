@@ -17,5 +17,5 @@ import java.lang.annotation.Target;
 @Target({ ElementType.TYPE })
 public @interface ObjectConstructor {
 
-	public String[] exclude() default {};
+	String[] exclude() default {};
 }
