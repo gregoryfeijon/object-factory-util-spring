@@ -17,6 +17,7 @@ public class Foo implements Serializable {
 	
 	private long fooId;
 	private String fooName;
+	private String sameNameAttribute;
 	private Bar bar;
 	private List<Bar> bars;
 
@@ -24,9 +25,10 @@ public class Foo implements Serializable {
 		ObjectFactoryUtil.createFromObject(foo, this);
 	}
 	
-	public Foo(long fooId, String fooName, Bar bar, List<Bar> bars) {
+	public Foo(long fooId, String fooName, String sameNameAttribute, Bar bar, List<Bar> bars) {
 		this.fooId = fooId;
 		this.fooName = fooName;
+		this.sameNameAttribute = sameNameAttribute;
 		this.bar = bar;
 		this.bars = bars;
 	}
