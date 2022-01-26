@@ -10,10 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.util.Assert;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -46,6 +43,11 @@ public class ObjectFactoryUtilSpringApplication {
         compareObjects(bars, copyBars, "It's the same collection!");
         Set<Bar> copyFromCopyBars = ObjectFactoryUtil.copyAllObjectsFromCollection(copyBars, HashSet::new);
         compareObjects(copyBars, copyFromCopyBars, "It's the same collection!");
+        List<Foo> foosFromBars = ObjectFactoryUtil.copyAllObjectsFromCollection(copyBars, ArrayList::new, Foo.class);
+        compareObjects(copyBars, copyFromCopyBars, "It's the same collection!");
+        Assert.isTrue(foosFromBars.get(0).getSameNameAttribute().equals(copyBars.get(0).getSameNameAttribute()), "Its not equal!");
+        System.out.println(GsonUtil.getGson().toJson(foosFromBars));
+        System.out.println(GsonUtil.getGson().toJson(copyBars));
     }
 
     private static void copyObjectsExample(List<Bar> bars) {
