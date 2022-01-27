@@ -1,4 +1,4 @@
-package br.com.gregoryfeijon.objectfactoryutilspring.util;
+package br.com.gregoryfeijon.objectfactoryutilspring.exception.util;
 
 import br.com.gregoryfeijon.objectfactoryutilspring.annotation.ObjectConstructor;
 import br.com.gregoryfeijon.objectfactoryutilspring.exception.ObjectFactoryUtilException;

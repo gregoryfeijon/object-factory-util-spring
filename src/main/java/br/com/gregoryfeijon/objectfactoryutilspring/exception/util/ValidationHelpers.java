@@ -1,4 +1,4 @@
-package br.com.gregoryfeijon.objectfactoryutilspring.util;
+package br.com.gregoryfeijon.objectfactoryutilspring.exception.util;
 
 import java.util.*;
 import java.util.function.Predicate;

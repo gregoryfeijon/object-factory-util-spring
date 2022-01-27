@@ -1,4 +1,4 @@
-package br.com.gregoryfeijon.objectfactoryutilspring.util;
+package br.com.gregoryfeijon.objectfactoryutilspring.exception.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
