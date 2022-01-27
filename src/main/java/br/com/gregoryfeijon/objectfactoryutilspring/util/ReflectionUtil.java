@@ -1,17 +1,13 @@
 package br.com.gregoryfeijon.objectfactoryutilspring.util;
 
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.ReflectionUtils;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
-
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.ReflectionUtils;
 
 /**
  * 17 de fev de 2020
@@ -20,8 +16,7 @@ import org.springframework.util.ReflectionUtils;
  */
 public final class ReflectionUtil {
 
-    private ReflectionUtil() {
-    }
+    private ReflectionUtil() {}
 
     /**
      * <strong>Método para obter todos os getters de um objeto.</strong>

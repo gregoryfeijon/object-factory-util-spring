@@ -1,17 +1,10 @@
 package br.com.gregoryfeijon.objectfactoryutilspring.util;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.Collection;
-
+import br.com.gregoryfeijon.objectfactoryutilspring.exception.ObjectFactoryUtilException;
 import com.google.gson.Gson;
 
-import br.com.gregoryfeijon.objectfactoryutilspring.exception.ObjectFactoryUtilException;
+import java.io.*;
+import java.util.Collection;
 
 /**
  * 

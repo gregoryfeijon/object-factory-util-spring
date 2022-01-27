@@ -1,5 +1,10 @@
 package br.com.gregoryfeijon.objectfactoryutilspring.util;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import net.dongliu.gson.GsonJava8TypeAdapterFactory;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.time.format.DateTimeFormatter;
@@ -7,12 +12,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-
-import net.dongliu.gson.GsonJava8TypeAdapterFactory;
 
 /**
  * 

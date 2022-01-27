@@ -1,10 +1,10 @@
 package br.com.gregoryfeijon.objectfactoryutilspring.model;
 
-import java.io.Serializable;
-
 import br.com.gregoryfeijon.objectfactoryutilspring.annotation.ObjectConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 @Data
 @NoArgsConstructor

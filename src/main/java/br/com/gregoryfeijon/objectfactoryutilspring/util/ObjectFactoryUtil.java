@@ -57,8 +57,8 @@ public final class ObjectFactoryUtil {
     static {
         GSON = GsonUtil.getGson();
         WRAPPER_TYPES = getWrapperTypes();
-        PREDICATE_MODIFIERS = criaPredicateModifiers();
-        criaMapaDefaultValues();
+        PREDICATE_MODIFIERS = predicateModifiers();
+        createMapDefaultValues();
     }
 
     private ObjectFactoryUtil() {}
@@ -745,11 +745,11 @@ public final class ObjectFactoryUtil {
      *
      * @return {@linkplain Predicate}&lt{@linkplain Field}&gt
      */
-    private static Predicate<Field> criaPredicateModifiers() {
+    private static Predicate<Field> predicateModifiers() {
         return p -> Modifier.isStatic(p.getModifiers()) && Modifier.isFinal(p.getModifiers());
     }
 
-    private static void criaMapaDefaultValues() {
+    private static void createMapDefaultValues() {
         DEFAULT_VALUES.put(boolean.class, Boolean.FALSE);
         DEFAULT_VALUES.put(byte.class, (byte) 0);
         DEFAULT_VALUES.put(short.class, (short) 0);

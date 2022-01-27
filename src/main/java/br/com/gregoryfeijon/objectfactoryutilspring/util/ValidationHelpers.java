@@ -1,18 +1,11 @@
 package br.com.gregoryfeijon.objectfactoryutilspring.util;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Predicate;
 
 /**
  * 
  * 7 de jan de 2020
- * 
- * 
  * 
  * @author gregory.feijon
  * 
@@ -27,7 +20,7 @@ public final class ValidationHelpers {
 
 	public static boolean collectionEmpty(Collection<?> entities) {
 		if (predicateCollection == null) {
-			criaPredicateCollectionVazia();
+			initializePredicateEmptyCollection();
 		}
 		return predicateCollection.test(entities);
 	}
@@ -36,7 +29,7 @@ public final class ValidationHelpers {
 		return !collectionEmpty(entities);
 	}
 
-	private static void criaPredicateCollectionVazia() {
+	private static void initializePredicateEmptyCollection() {
 		predicateCollection = collection -> collection == null || collection.isEmpty();
 	}
 
@@ -55,8 +48,8 @@ public final class ValidationHelpers {
 		predicateIsNull = Objects::isNull;
 	}
 
-	public static List<String> processaErros(Map<String, Boolean> map) {
-		Predicate<Boolean> p = criaPredicateProcessaErros();
+	public static List<String> processErrors(Map<String, Boolean> map) {
+		Predicate<Boolean> p = processErrorsPredicate();
 		List<String> erros = new LinkedList<>();
 		map.forEach((mensagem, v) -> {
 			if (p.test(v)) {
@@ -66,14 +59,14 @@ public final class ValidationHelpers {
 		return erros;
 	}
 
-	private static Predicate<Boolean> criaPredicateProcessaErros() {
+	private static Predicate<Boolean> processErrorsPredicate() {
 		return p -> !p;
 	}
 
-	public static List<String> montaListaErro(String mensagemInicial, List<String> erros) {
-		List<String> errosAdd = new LinkedList<>(Collections.singletonList(mensagemInicial));
-		errosAdd.addAll(erros);
-		erros.addAll(errosAdd);
+	public static List<String> buildErrorsList(String initialMessage, List<String> errors) {
+		List<String> errosAdd = new LinkedList<>(Collections.singletonList(initialMessage));
+		errosAdd.addAll(errors);
+		errors.addAll(errosAdd);
 		return errosAdd;
 	}
 }
