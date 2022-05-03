@@ -1,7 +1,7 @@
 package br.com.gregoryfeijon.objectfactoryutilspring.model;
 
 import br.com.gregoryfeijon.objectfactoryutilspring.annotation.ObjectConstructor;
-import br.com.gregoryfeijon.objectfactoryutilspring.exception.util.ObjectFactoryUtil;
+import br.com.gregoryfeijon.objectfactoryutilspring.util.ObjectFactoryUtil;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

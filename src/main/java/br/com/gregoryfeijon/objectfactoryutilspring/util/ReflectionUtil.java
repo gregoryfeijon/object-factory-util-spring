@@ -1,4 +1,4 @@
-package br.com.gregoryfeijon.objectfactoryutilspring.exception.util;
+package br.com.gregoryfeijon.objectfactoryutilspring.util;
 
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;

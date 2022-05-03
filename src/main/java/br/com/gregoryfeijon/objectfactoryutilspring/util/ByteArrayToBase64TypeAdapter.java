@@ -1,4 +1,4 @@
-package br.com.gregoryfeijon.objectfactoryutilspring.exception.util;
+package br.com.gregoryfeijon.objectfactoryutilspring.util;
 
 import com.google.gson.*;
 import org.springframework.boot.json.JsonParseException;

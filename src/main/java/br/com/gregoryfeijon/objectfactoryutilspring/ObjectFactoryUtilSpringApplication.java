@@ -2,8 +2,8 @@ package br.com.gregoryfeijon.objectfactoryutilspring;
 
 import br.com.gregoryfeijon.objectfactoryutilspring.model.Bar;
 import br.com.gregoryfeijon.objectfactoryutilspring.model.Foo;
-import br.com.gregoryfeijon.objectfactoryutilspring.exception.util.GsonUtil;
-import br.com.gregoryfeijon.objectfactoryutilspring.exception.util.ObjectFactoryUtil;
+import br.com.gregoryfeijon.objectfactoryutilspring.util.GsonUtil;
+import br.com.gregoryfeijon.objectfactoryutilspring.util.ObjectFactoryUtil;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
