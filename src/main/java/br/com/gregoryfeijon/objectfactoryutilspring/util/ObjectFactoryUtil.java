@@ -396,12 +396,16 @@ public final class ObjectFactoryUtil {
             if (destField.getType().isEnum()) {
                 if (sourceField.getType().equals(String.class)) {
                     return findEnumConstantEquivalent(destField.getType(), sourceValue);
+                } else if(sourceField.getType().isEnum()) {
+                    if (sourceValue != null) {
+                        return findEnumConstantEquivalent(destField.getType(), sourceValue.toString());
+                    }
                 }
                 return null;
             }
             if (sourceField.getType().isEnum()) {
-                if (destField.getType().equals(String.class)) {
-                    if (sourceValue != null) {
+                if (sourceValue != null) {
+                    if (destField.getType().equals(String.class)) {
                         return sourceValue.toString();
                     }
                 }
