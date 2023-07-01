@@ -20,19 +20,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.Temporal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -54,14 +42,14 @@ public final class ObjectFactoryUtil {
     private static final Predicate<Field> PREDICATE_MODIFIERS;
     private static final Map<Class<?>, Object> DEFAULT_VALUES = new HashMap<>();
 
+    private ObjectFactoryUtil() {}
+
     static {
         GSON = GsonUtil.getGson();
         WRAPPER_TYPES = getWrapperTypes();
         PREDICATE_MODIFIERS = predicateModifiers();
         createMapDefaultValues();
     }
-
-    private ObjectFactoryUtil() {}
 
     /**
      * <strong>Método que retorna todos os objetos de uma {@linkplain Collection
@@ -379,43 +367,57 @@ public final class ObjectFactoryUtil {
      * @param source      - S
      * @return {@linkplain Object}
      */
-    private static <S> Object verifyValue(Field sourceField, Field destField, S source) {
+    private static <S> Object  verifyValue(Field sourceField, Field destField, S source) {
         Object sourceValue = FieldUtils.getProtectedFieldValue(sourceField.getName(), source);
-        if (sourceField.getType() != destField.getType()) {
-            if (isWrapperType(sourceField.getType()) && destField.getType().isPrimitive()) {
-                if (sourceValue == null) {
-                    return defaultValueFor(destField.getType());
-                }
-            }
-            if (isWrapperType(destField.getType()) && sourceField.getType().isPrimitive()) {
-                Object defaultValue = defaultValueFor(sourceField.getType());
-                if (Objects.equals(sourceValue, defaultValue)) {
-                    return null;
-                }
-            }
-            if (destField.getType().isEnum()) {
-                if (sourceField.getType().equals(String.class)) {
-                    return findEnumConstantEquivalent(destField.getType(), sourceValue);
-                } else if(sourceField.getType().isEnum()) {
-                    if (sourceValue != null) {
-                        return findEnumConstantEquivalent(destField.getType(), sourceValue.toString());
-                    }
-                }
-                return null;
-            }
-            if (sourceField.getType().isEnum()) {
-                if (sourceValue != null) {
-                    if (destField.getType().equals(String.class)) {
-                        return sourceValue.toString();
-                    }
-                }
-                return null;
-            }
-            if (isClassMapCollection(destField.getType()) || isClassMapCollection(sourceField.getType())) {
-                return null;
+        Class<?> sourceFieldType = sourceField.getType();
+        Class<?> destFieldType = destField.getType();
+
+        if (sourceFieldType == destFieldType) {
+            return copyValue(sourceField, destField, sourceValue);
+        }
+
+        if (isWrapperType(sourceFieldType) && destFieldType.isPrimitive() && sourceValue == null) {
+            return defaultValueFor(destFieldType);
+        }
+
+        if (isWrapperType(destFieldType) && sourceFieldType.isPrimitive() && Objects.equals(sourceValue, defaultValueFor(sourceFieldType))) {
+            return null;
+        }
+
+        if (sourceFieldType.isEnum() || destFieldType.isEnum()) {
+            return validateEnums(sourceField, destField, sourceValue);
+        }
+
+        if (isClassMapCollection(destFieldType) || isClassMapCollection(sourceFieldType)) {
+            return null;
+        }
+
+        return copyValue(sourceField, destField, sourceValue);
+    }
+
+    /**
+     * <strong>Método validação de enum, para o caso de algum dos valores dos atributos envolvidos
+     * na cópia seja do tipo enum</strong>
+     *
+     * @param sourceField - {@linkplain Field}
+     * @param destField   - {@linkplain Field}
+     * @param sourceValue - {@linkplain Object}
+     * @return {@linkplain Object}
+     */
+    private static Object validateEnums(Field sourceField, Field destField, Object sourceValue) {
+        Class<?> sourceFieldType = sourceField.getType();
+        Class<?> destFieldType = destField.getType();
+        if (destFieldType.isEnum()) {
+            if (sourceFieldType.equals(String.class)) {
+                return findEnumConstantEquivalent(destFieldType, sourceValue);
+            } else if (sourceFieldType.isEnum() && sourceValue != null) {
+                return findEnumConstantEquivalent(destFieldType, sourceValue.toString());
             }
         }
-        return copyValue(sourceField, destField, sourceValue);
+        if (sourceFieldType.isEnum() && (sourceValue != null && destFieldType.equals(String.class))) {
+            return sourceValue.toString();
+        }
+        return null;
     }
 
     /**
@@ -429,7 +431,7 @@ public final class ObjectFactoryUtil {
     private static Object findEnumConstantEquivalent(Class<?> type, Object sourceValue) {
         Object[] returnValue = {null};
         Stream.of(type.getEnumConstants()).forEach(enumConstant -> {
-            if (enumConstant.toString().equals(sourceValue)) {
+            if (Objects.equals(enumConstant.toString(), sourceValue)) {
                 returnValue[0] = enumConstant;
             }
         });
@@ -458,17 +460,19 @@ public final class ObjectFactoryUtil {
      * @return {@linkplain Object}
      */
     private static Object copyValue(Field sourceField, Field destField, Object sourceValue) {
-        if (isPrimitiveOrEnum(sourceField.getType())) {
+        Class<?> sourceFieldType = sourceField.getType();
+        Class<?> destFieldType = destField.getType();
+        if (isPrimitiveOrEnum(sourceFieldType)) {
             return sourceValue;
         }
-        if (isWrapperType(sourceField.getType())) {
-            return serializingClone(sourceValue, destField.getType());
+        if (isWrapperType(sourceFieldType)) {
+            return serializingClone(sourceValue, destFieldType);
         }
         if (isClassMapCollection(sourceField.getType())) {
             return serializingCloneCollectionMap(sourceValue, destField.getGenericType());
         }
         try {
-            return serializingCloneObjects(sourceValue, destField.getType());
+            return serializingCloneObjects(sourceValue, destFieldType);
         } catch (Exception ex) {
             throw new ObjectFactoryUtilException(ex.getMessage());
         }
@@ -604,9 +608,8 @@ public final class ObjectFactoryUtil {
      * @param byteClone   - byte[]
      * @param genericType - {@linkplain Type}
      * @return {@linkplain Object}
-     * @throws ClassNotFoundException - exception lançada para testar se o tipo existe
      */
-    private static Object desserializeCollection(byte[] byteClone, Type genericType) throws ClassNotFoundException {
+    private static Object desserializeCollection(byte[] byteClone, Type genericType) {
         return GSON.fromJson(SerializationUtil.getDesserealizedObjectAsString(byteClone), genericType);
     }
 

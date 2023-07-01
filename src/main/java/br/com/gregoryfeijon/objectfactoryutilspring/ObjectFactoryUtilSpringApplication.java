@@ -2,6 +2,7 @@ package br.com.gregoryfeijon.objectfactoryutilspring;
 
 import br.com.gregoryfeijon.objectfactoryutilspring.model.Bar;
 import br.com.gregoryfeijon.objectfactoryutilspring.model.Foo;
+import br.com.gregoryfeijon.objectfactoryutilspring.model.enums.EnumBar;
 import br.com.gregoryfeijon.objectfactoryutilspring.util.GsonUtil;
 import br.com.gregoryfeijon.objectfactoryutilspring.util.ObjectFactoryUtil;
 import org.springframework.boot.CommandLineRunner;
@@ -35,7 +36,7 @@ public class ObjectFactoryUtilSpringApplication {
     private static List<Bar> createBars(List<String> barNames) {
         return IntStream.range(1, barNames.size() + 1).boxed()
                 .collect(Collectors.toMap(Function.identity(), i -> barNames.get(i - 1))).entrySet().stream()
-                .map(i -> new Bar(i.getKey(), i.getValue(), "SAME NAME")).collect(Collectors.toList());
+                .map(i -> new Bar(i.getKey(), EnumBar.FIRST_ENUM, i.getValue(), "SAME NAME")).collect(Collectors.toList());
     }
 
     private static void copyListsExample(List<Bar> bars) {

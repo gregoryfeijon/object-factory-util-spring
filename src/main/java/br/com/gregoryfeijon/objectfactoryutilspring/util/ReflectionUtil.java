@@ -4,6 +4,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.*;
@@ -79,14 +80,13 @@ public final class ReflectionUtil {
     public static Collection<Field> getFieldsAsCollection(Object object, boolean getFromSuperclass) {
         Class<?> clazz = object.getClass();
         Collection<Field> fields = Arrays.stream(clazz.getDeclaredFields()).collect(Collectors.toList());
-        if (getFromSuperclass) {
-            if (clazz.getSuperclass() != null) {
+        if (getFromSuperclass && clazz.getSuperclass() != null) {
+            clazz = clazz.getSuperclass();
+            while (clazz != null) {
+                fields.addAll(Arrays.stream(clazz.getDeclaredFields()).collect(Collectors.toList()));
                 clazz = clazz.getSuperclass();
-                while (clazz != null) {
-                    fields.addAll(Arrays.stream(clazz.getDeclaredFields()).collect(Collectors.toList()));
-                    clazz = clazz.getSuperclass();
-                }
             }
+
         }
         return fields;
     }
@@ -100,9 +100,10 @@ public final class ReflectionUtil {
      * @param entity1 - &ltT&gt
      * @param entity2 - &ltT&gt
      * @return {@linkplain Boolean}
-     * @throws Exception
+     * @throws InvocationTargetException - Exceção lançada se tiver algum erro na comparação das listas de métodos get
+     * @throws IllegalAccessException    - Exceção lançada se tiver algum erro na comparação das listas de métodos get
      */
-    public static <T> boolean compareObjectsValues(T entity1, T entity2) throws Exception {
+    public static <T> boolean compareObjectsValues(T entity1, T entity2) throws InvocationTargetException, IllegalAccessException {
         List<Method> getsEntity1 = ReflectionUtil.findGetMethods(entity1);
         List<Method> getsEntity2 = ReflectionUtil.findGetMethods(entity2);
         return compareLists(getsEntity1, getsEntity2, entity1, entity2);
@@ -120,9 +121,11 @@ public final class ReflectionUtil {
      * @param entity2     - &ltT&gt
      * @param filterNames - {@linkplain String}[]
      * @return {@linkplain Boolean}
-     * @throws Exception
+     * @throws InvocationTargetException - Execeção lançada se tiver algum erro na comparação dos objetos
+     * @throws IllegalAccessException    - Execeção lançada se tiver algum erro na comparação dos objetos
      */
-    public static <T> boolean compareObjectsValues(T entity1, T entity2, String[] filterNames) throws Exception {
+    public static <T> boolean compareObjectsValues(T entity1, T entity2, String[] filterNames)
+            throws InvocationTargetException, IllegalAccessException {
         if (filterNames == null) {
             return compareObjectsValues(entity1, entity2);
         }
@@ -144,10 +147,11 @@ public final class ReflectionUtil {
      *                    <p>
      *                    campos
      * @return {@linkplain Boolean}
-     * @throws Exception
+     * @throws InvocationTargetException - Execeção lançada se tiver algum erro na comparação dos objetos
+     * @throws IllegalAccessException    - Execeção lançada se tiver algum erro na comparação dos objetos
      */
     public static <T> boolean compareObjectsValues(T entity1, T entity2, String[] filterNames, boolean remove)
-            throws Exception {
+            throws InvocationTargetException, IllegalAccessException {
         return compare(entity1, entity2, filterNames, remove);
     }
 
@@ -164,9 +168,11 @@ public final class ReflectionUtil {
      *                    <p>
      *                    campos
      * @return {@linkplain Boolean}
-     * @throws Exception
+     * @throws InvocationTargetException - Execeção lançada se tiver algum erro na comparação das listas de getter
+     * @throws IllegalAccessException    - Execeção lançada se tiver algum erro na comparação das listas de getter
      */
-    private static <T> boolean compare(T entity1, T entity2, String[] filterNames, boolean remove) throws Exception {
+    private static <T> boolean compare(T entity1, T entity2, String[] filterNames, boolean remove)
+            throws InvocationTargetException, IllegalAccessException {
         List<Method> getsEntity1 = ReflectionUtil.findGetMethods(entity1);
         List<Method> getsEntity2 = ReflectionUtil.findGetMethods(entity2);
         getsEntity1 = filterList(getsEntity1, filterNames, remove);
@@ -178,8 +184,6 @@ public final class ReflectionUtil {
      * <strong>Método que efetivamente filtra a lista de getters, de acordo com os
      * <p>
      * parâmetros especificados.</strong>
-     *
-     *
      *
      * <p>
      * <p>
@@ -226,8 +230,6 @@ public final class ReflectionUtil {
      * <p>
      * encontre.</strong>
      *
-     *
-     *
      * <p>
      * <p>
      * Para cada 1 dos métodos da lista 1, encontra o correspondente da lista 2
@@ -257,14 +259,15 @@ public final class ReflectionUtil {
      * @param entity1     - {@linkplain Object}
      * @param entity2     - {@linkplain Object}
      * @return {@linkplain Boolean}
-     * @throws Exception
+     * @throws InvocationTargetException - Execeção lançada se tiver algum erro no invoke dos métodos get
+     * @throws IllegalAccessException    - Execeção lançada se tiver algum erro no invoke dos métodos get
      */
     private static boolean compareLists(List<Method> getsEntity1, List<Method> getsEntity2, Object entity1,
-                                        Object entity2) throws Exception {
+                                        Object entity2) throws InvocationTargetException, IllegalAccessException {
         boolean retorno = true;
         for (Method methodEntity1 : getsEntity1) {
             Optional<Method> methodEntity2 = getsEntity2.stream()
-                    .filter(method -> method.getName().toLowerCase().equals(methodEntity1.getName().toLowerCase()))
+                    .filter(method -> method.getName().equalsIgnoreCase(methodEntity1.getName()))
                     .findAny();
             if (methodEntity2.isPresent()) {
                 Object valorSalvo = methodEntity1.invoke(entity1);
